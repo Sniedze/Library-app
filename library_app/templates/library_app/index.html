@@ -2,19 +2,38 @@
 
 {% block content %}
 
-<h1>Books</h1>
-<table>
-    <tr>
-        <th>ID</th>
-        <th>TITLE</th>
-        <th>AUTHOR</th>
-    </tr>
-    {% for book in books %}
-    <tr>
-        <td>{{ book.pk }}</td>
-        <td>{{ book.title }}</td>
-        <td>{{ book.author }}</td>
-    </tr>
+<h1>Borrowed Books by {{ user }}</h1>
+<div class="catalog">
+    {% for borrowed_book in borrowed_books %}
+    <form action="{% url 'library_app:return_book' %}" method="POST">
+        {% csrf_token %}
+        <article class="book-container">
+            <h3>{{ borrowed_book.book}}</h3>
+            <h3>Borrowed on: {{ borrowed_book.borrowed_timestamp }}</h3>
+            <h3>Return Date: {{ borrowed_book.deadline }}</h3>
+
+            <input type="hidden" name="fk" value="{{ borrowed_book.book.pk }}">
+            <input type="hidden" name="pk" value="{{ borrowed_book.pk }}">
+
+            <input type="submit" value="Return">
+
+        </article>
+    </form>
+
     {% endfor %}
-</table>
+</div>
+<h2>Read and Returned Books by {{ user }}</h2>
+<div class="catalog returned-books">
+
+    {% for returned_book in returned_books %}
+
+    <article class="returned-book-container book-container">
+        <h3>{{ returned_book.book}}</h3>
+        <h3>Borrowed on: {{ returned_book.borrowed_timestamp }}</h3>
+
+    </article>
+
+
+    {% endfor %}
+</div>
 {% endblock %}

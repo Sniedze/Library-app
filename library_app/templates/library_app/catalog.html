@@ -1,0 +1,21 @@
+{% extends "library_app/base.html" %}
+
+{% block content %}
+
+<h1>Books</h1>
+<div class="catalog">
+    {% for book in books %}
+    <form action="{% url 'library_app:borrow' %}" method="POST">
+        {% csrf_token %}
+        <article class="book-container">
+            <h3>{{ book.title }}</h3>
+            <h3>{{ book.author }}</h3>
+            <input type="hidden" name="pk" value="{{ book.pk }}">
+            <input type="submit" value="Borrow">
+
+        </article>
+    </form>
+
+    {% endfor %}
+</div>
+{% endblock %}

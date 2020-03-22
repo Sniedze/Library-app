@@ -4,9 +4,21 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     {% load static %}
+    <link rel="stylesheet" type="text/css" href="{% static 'css/style.css' %}" media="screen"/>
+
     <title>Library</title>
 </head>
 <body>
+<nav class="navbar">
+    <ul>
+        <a href="{% url 'library_app:index' %}" class="navlink">HOME</a>
+        <a href="{% url 'library_app:catalog' %}" class="navlink">CATALOG</a>
+        <a href="{% url 'login_app:sign_up' %}" class="navlink">SIGN UP</a>
+        <a href="{% url 'login_app:login' %}" class="navlink">LOGIN</a>
+        <a href="{% url 'login_app:logout' %}">LOG OUT</a>
+
+    </ul>
+</nav>
 {% block content %}
 {% endblock %}
 </body>

@@ -1,0 +1,24 @@
+
+html, body{
+    margin: 0;
+    background-color: #A69CAC;
+    text-align: center;
+}
+h1{
+text-align: center;
+}
+.catalog{
+    padding: 30px 16%;
+    display: grid;
+    grid-gap: 20px;
+    grid-template-columns: repeat(auto-fill, 300px);
+
+}
+.book-container{
+    background-color: #D8D8F6;
+    height: 120px;
+    box-shadow: 10px 10px 5px 0px rgba(0,0,0,0.26);
+    border-radius: 20px;
+    padding: 25px;
+
+}
