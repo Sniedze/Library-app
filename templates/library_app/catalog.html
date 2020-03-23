@@ -1,11 +1,11 @@
-{% extends "library_app/base.html" %}
+{% extends "base.html" %}
 
 {% block content %}
 
 <h1>Books</h1>
 <div class="catalog">
     {% for book in books %}
-    <form action="{% url 'library_app:borrow' %}" method="POST">
+    <form action="{% url 'library_app:borrow_book' %}" method="POST">
         {% csrf_token %}
         <article class="article-container">
             <h3>{{ book.title }}</h3>

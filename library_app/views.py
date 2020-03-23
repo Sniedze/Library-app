@@ -11,6 +11,39 @@ from .models import BorrowedBook
 from .models import BorrowedMagazine
 
 
+@login_required
+def index(request):
+    today = datetime.today()
+    user = request.user
+    if user.is_superuser:
+        overdue_books = BorrowedBook.objects.order_by('-deadline').filter(isReturned=False).filter(
+            Q(deadline__gt=today) | Q(deadline=None))
+        overdue_magazines = BorrowedMagazine.objects.order_by('-deadline').filter(isReturned=False).filter(
+            Q(deadline__gt=today) | Q(deadline=None))
+        context = {
+            'overdue_books': overdue_books,
+            'overdue_magazines': overdue_magazines
+        }
+        return render(request, 'library_app/overdue.html', context)
+    else:
+        borrowed_books = BorrowedBook.objects.order_by('borrowed_timestamp').filter(user=request.user, isReturned=False)
+        borrowed_magazines = BorrowedMagazine.objects.order_by('borrowed_timestamp').filter(user=request.user,
+                                                                                            isReturned=False)
+        returned_books = BorrowedBook.objects.order_by('borrowed_timestamp').filter(user=request.user, isReturned=True)
+        returned_magazines = BorrowedMagazine.objects.order_by('borrowed_timestamp').filter(user=request.user,
+                                                                                            isReturned=True)
+
+        context = {
+            'borrowed_books': borrowed_books,
+            'returned_books': returned_books,
+            'borrowed_magazines': borrowed_magazines,
+            'returned_magazines': returned_magazines,
+            'user': request.user,
+        }
+
+        return render(request, 'library_app/index.html', context)
+
+
 @login_required()
 def catalog(request):
     books = Book.objects.order_by('title').filter(isAvailable=True)
@@ -30,7 +63,7 @@ def magazine_catalog(request):
 
 
 @login_required
-def borrow(request):
+def borrow_book(request):
     borrowed_books = BorrowedBook.objects.filter(user=request.user, isReturned=False)
     if len(borrowed_books) < 10:
         pk = request.POST['pk']
@@ -71,39 +104,6 @@ def borrow_magazine(request):
 
         }
         return render(request, 'library_app/notification.html', context)
-
-
-@login_required
-def index(request):
-    today = datetime.today()
-    user = request.user
-    if user.is_superuser:
-        overdue_books = BorrowedBook.objects.order_by('-deadline').filter(isReturned=False).filter(
-            Q(deadline__gt=today) | Q(deadline=None))
-        overdue_magazines = BorrowedMagazine.objects.order_by('-deadline').filter(isReturned=False).filter(
-            Q(deadline__gt=today) | Q(deadline=None))
-        context = {
-            'overdue_books': overdue_books,
-            'overdue_magazines': overdue_magazines
-        }
-        return render(request, 'library_app/overdue.html', context)
-    else:
-        borrowed_books = BorrowedBook.objects.order_by('borrowed_timestamp').filter(user=request.user, isReturned=False)
-        borrowed_magazines = BorrowedMagazine.objects.order_by('borrowed_timestamp').filter(user=request.user,
-                                                                                            isReturned=False)
-        returned_books = BorrowedBook.objects.order_by('borrowed_timestamp').filter(user=request.user, isReturned=True)
-        returned_magazines = BorrowedMagazine.objects.order_by('borrowed_timestamp').filter(user=request.user,
-                                                                                            isReturned=True)
-
-        context = {
-            'borrowed_books': borrowed_books,
-            'returned_books': returned_books,
-            'borrowed_magazines': borrowed_magazines,
-            'returned_magazines': returned_magazines,
-            'user': request.user,
-        }
-
-        return render(request, 'library_app/index.html', context)
 
 
 @login_required()
