@@ -1,0 +1,9 @@
+{% extends "library_app/base.html" %}
+
+{% block content %}
+
+<h1>{{ text1 }}</h1>
+<h2>{{ text2 }}</h2>
+<a href="{% url 'library_app:index' %}"> Borrowed Items</a>
+
+{% endblock %}

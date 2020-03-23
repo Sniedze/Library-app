@@ -1,0 +1,20 @@
+{% extends "library_app/base.html" %}
+
+{% block content %}
+
+<h1>Magazines</h1>
+<div class="catalog magazine-catalog">
+    {% for magazine in magazines %}
+    <form action="{% url 'library_app:borrow_magazine' %}" method="POST">
+        {% csrf_token %}
+        <article class="article-container magazine-article">
+            <h3>{{ magazine.title }}</h3>
+            <input type="hidden" name="pk" value="{{ magazine.pk }}">
+            <input class='button' type="submit" value="Borrow">
+
+        </article>
+    </form>
+
+    {% endfor %}
+</div>
+{% endblock %}

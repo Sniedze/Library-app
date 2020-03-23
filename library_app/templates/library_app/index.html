@@ -1,39 +1,108 @@
 {% extends "library_app/base.html" %}
 
 {% block content %}
+<main>
+    <h1>Welcome {{ user }}!</h1>
+    <div class="borrowed-items-section">
+        <div class="books-container">
+            <h1>Borrowed Books</h1>
+            <div class="catalog">
+                {% for borrowed_book in borrowed_books %}
+                <form action="{% url 'library_app:return_book' %}" method="POST">
+                    {% csrf_token %}
+                    <article class="article-container borrowed-book-container">
+                        <h2>{{ borrowed_book.book}}</h2>
+                        <h3>Borrowed on: {{ borrowed_book.borrowed_timestamp }}</h3>
+                        <h3 class="return-date">Return Date: {{ borrowed_book.deadline }}</h3>
 
-<h1>Borrowed Books by {{ user }}</h1>
-<div class="catalog">
-    {% for borrowed_book in borrowed_books %}
-    <form action="{% url 'library_app:return_book' %}" method="POST">
-        {% csrf_token %}
-        <article class="book-container">
-            <h3>{{ borrowed_book.book}}</h3>
-            <h3>Borrowed on: {{ borrowed_book.borrowed_timestamp }}</h3>
-            <h3>Return Date: {{ borrowed_book.deadline }}</h3>
+                        <input type="hidden" name="fk" value="{{ borrowed_book.book.pk }}">
+                        <input type="hidden" name="pk" value="{{ borrowed_book.pk }}">
+                        <input class='button' type="submit" value="Return">
 
-            <input type="hidden" name="fk" value="{{ borrowed_book.book.pk }}">
-            <input type="hidden" name="pk" value="{{ borrowed_book.pk }}">
+                    </article>
+                </form>
 
-            <input type="submit" value="Return">
+                {% endfor %}
+            </div>
+        </div>
+        <div class="magazine-container">
+            <h1>Borrowed Magazines</h1>
+            <div class="catalog">
+                {% for borrowed_magazine in borrowed_magazines %}
+                <form action="{% url 'library_app:return_magazine' %}" method="POST">
+                    {% csrf_token %}
+                    <article class="article-container magazine-article borrowed-magazine-container">
+                        <h2>{{ borrowed_magazine.magazine}}</h2>
+                        <h3>Borrowed on: {{ borrowed_magazine.borrowed_timestamp }}</h3>
+                        <h3 class="return-date">Return Date: {{ borrowed_magazine.deadline }}</h3>
 
-        </article>
-    </form>
+                        <input type="hidden" name="fk" value="{{ borrowed_magazine.magazine.pk }}">
+                        <input type="hidden" name="pk" value="{{ borrowed_magazine.pk }}">
+                        <input class='button' type="submit" value="Return">
 
-    {% endfor %}
-</div>
-<h2>Read and Returned Books by {{ user }}</h2>
-<div class="catalog returned-books">
+                    </article>
+                </form>
 
-    {% for returned_book in returned_books %}
+                {% endfor %}
+            </div>
+        </div>
+    </div>
+    <div class="returned-items-section">
+        <div class="returned-books">
+            <h2>Read and Returned Books</h2>
+            <table>
+                <tr>
+                    <th>Book Title</th>
+                    <th>Author</th>
+                    <th>Borrowing Date</th>
+                    <th></th>
+                </tr>
+                {% for returned_book in returned_books %}
+                <form action="{% url 'library_app:borrow' %}" method="POST">
+                    {% csrf_token %}
 
-    <article class="returned-book-container book-container">
-        <h3>{{ returned_book.book}}</h3>
-        <h3>Borrowed on: {{ returned_book.borrowed_timestamp }}</h3>
+                    <tr>
+                        <td>{{ returned_book.book }}</td>
+                        <td>{{ returned_book.book.author }}</td>
+                        <td>{{ returned_book.borrowed_timestamp }}</td>
+                        <td><input type="submit" class='button overdue-button' value="Borrow Again"></td>
+                    </tr>
 
-    </article>
+                    <input type="hidden" name="fk" value="{{ overdue_book.book.pk }}">
+                    <input type="hidden" name="pk" value="{{ overdue_book.pk }}">
+                </form>
+
+                {% endfor %}
+            </table>
+        </div>
+        <div class="returned-magazines">
+            <h2>Read and Returned Magazines</h2>
+            <table>
+                <tr>
+                    <th>Magazine Title</th>
+                    <th>Borrowing Date</th>
+                    <th></th>
+                </tr>
+                {% for returned_magazine in returned_magazines %}
+                <form action="{% url 'library_app:borrow_magazine' %}" method="POST">
+                    {% csrf_token %}
+
+                    <tr class="magazine-row">
+                        <td>{{ returned_magazine.magazine }}</td>
+                        <td>{{ returned_magazine.borrowed_timestamp }}</td>
+                        <td><input type="submit" class='button overdue-button' value="Borrow Again"></td>
+                    </tr>
+
+                    <input type="hidden" name="fk" value="{{ overdue_magazine.magazine.pk }}">
+                    <input type="hidden" name="pk" value="{{ overdue_magazine.pk }}">
+                </form>
+
+                {% endfor %}
+            </table>
+        </div>
+    </div>
+
+</main>
 
 
-    {% endfor %}
-</div>
 {% endblock %}

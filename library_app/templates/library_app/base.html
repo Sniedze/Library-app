@@ -12,10 +12,11 @@
 <nav class="navbar">
     <ul>
         <a href="{% url 'library_app:index' %}" class="navlink">HOME</a>
-        <a href="{% url 'library_app:catalog' %}" class="navlink">CATALOG</a>
+        <a href="{% url 'library_app:catalog' %}" class="navlink">BOOKS</a>
+        <a href="{% url 'library_app:magazine' %}" class="navlink">MAGAZINES</a>
         <a href="{% url 'login_app:sign_up' %}" class="navlink">SIGN UP</a>
         <a href="{% url 'login_app:login' %}" class="navlink">LOGIN</a>
-        <a href="{% url 'login_app:logout' %}">LOG OUT</a>
+        <a href="{% url 'login_app:logout' %}" class="navlink">LOG OUT</a>
 
     </ul>
 </nav>

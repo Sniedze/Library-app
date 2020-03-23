@@ -1,0 +1,67 @@
+{% extends "library_app/base.html" %}
+
+{% block content %}
+<div class="overdue-container">
+    <div class="overdue-books">
+        <h1>List of Overdue Books</h1>
+        <table>
+            <tr>
+                <th>Due Date</th>
+                <th>User</th>
+                <th>Book</th>
+                <th>Borrowed on</th>
+                <th></th>
+
+            </tr>
+            {% for overdue_book in overdue_books %}
+            <form action="{% url 'library_app:return_book' %}" method="POST">
+                {% csrf_token %}
+
+                <tr>
+                    <td>{{ overdue_book.deadline }}</td>
+                    <td>{{ overdue_book.user }}</td>
+                    <td>{{ overdue_book.book}}</td>
+                    <td>{{ overdue_book.borrowed_timestamp }}</td>
+                    <td><input type="submit" class='button overdue-button' value="Notify the User"></td>
+                </tr>
+
+                <input type="hidden" name="fk" value="{{ overdue_book.book.pk }}">
+                <input type="hidden" name="pk" value="{{ overdue_book.pk }}">
+            </form>
+
+            {% endfor %}
+        </table>
+    </div>
+    <div class="overdue-magazines">
+        <h1>List of Overdue Magazines</h1>
+        <table>
+            <tr>
+                <th>Due Date</th>
+                <th>User</th>
+                <th>Magazine</th>
+                <th>Borrowed on</th>
+                <th></th>
+
+            </tr>
+            {% for overdue_magazine in overdue_magazines %}
+            <form action="{% url 'library_app:return_magazine' %}" method="POST">
+                {% csrf_token %}
+
+                <tr class="magazine-row">
+                    <td>{{ overdue_magazine.deadline }}</td>
+                    <td>{{ overdue_magazine.user }}</td>
+                    <td>{{ overdue_magazine.magazine}}</td>
+                    <td>{{ overdue_magazine.borrowed_timestamp }}</td>
+                    <td><input type="submit" class='button overdue-button' value="Notify the User"></td>
+                </tr>
+
+                <input type="hidden" name="fk" value="{{ overdue_magazine.magazine.pk }}">
+                <input type="hidden" name="pk" value="{{ overdue_magazine.pk }}">
+            </form>
+
+            {% endfor %}
+        </table>
+    </div>
+</div>
+
+{% endblock %}

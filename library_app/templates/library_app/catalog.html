@@ -7,11 +7,11 @@
     {% for book in books %}
     <form action="{% url 'library_app:borrow' %}" method="POST">
         {% csrf_token %}
-        <article class="book-container">
+        <article class="article-container">
             <h3>{{ book.title }}</h3>
             <h3>{{ book.author }}</h3>
             <input type="hidden" name="pk" value="{{ book.pk }}">
-            <input type="submit" value="Borrow">
+            <input class='button' type="submit" value="Borrow">
 
         </article>
     </form>

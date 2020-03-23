@@ -1,24 +1,115 @@
 
 html, body{
     margin: 0;
-    background-color: #A69CAC;
+    background-color: #f8f5f5;
     text-align: center;
+    color: #0F110C;
 }
 h1{
-text-align: center;
+    color: #1d4e89;
 }
-.catalog{
-    padding: 30px 16%;
-    display: grid;
-    grid-gap: 20px;
-    grid-template-columns: repeat(auto-fill, 300px);
+h2{
+    margin: 10px auto;
+}
+h3{
+    margin: 5px;
+    margin: 5px;
+}
+.return-date{
+    color: #AB2346;
+}
+nav{
+    background-color:#0F110C;
+    padding: 20px;
+    margin: 0 auto;
+    display: flex;
+    justify-content: space-around;
 
 }
-.book-container{
-    background-color: #D8D8F6;
+.navlink{
+    color: #FDECEF;
+    text-decoration: none;
+    font-size: 1.2em;
+    padding: 13px 30px;
+    border: 2px solid #1d4e89;
+    border-radius: 30px;
+    text-align: center;
+
+}
+.navlink:active {
+    background-color: #1d4e89;
+    color: white;
+}
+.borrowed-items-section{
+    display: grid;
+    grid-template-columns: 70% 30%;
+}
+.returned-items-section{
+    display: grid;
+    grid-gap: 20px;
+    grid-template-columns: 60% 40%;
+}
+
+.catalog{
+    padding: 30px;
+    display: grid;
+    grid-gap: 20px;
+    grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+
+
+}
+.article-container{
+    display:grid;
+    background-color: #DDCECD;
     height: 120px;
     box-shadow: 10px 10px 5px 0px rgba(0,0,0,0.26);
     border-radius: 20px;
-    padding: 25px;
-
+    padding: 10px 20px;
+    margin: 0 auto;
 }
+
+.magazine-article{
+    background-color: #cddcdd;
+    height: 80px;
+}
+.borrowed-book-container, .borrowed-magazine-container {
+    height: 170px;
+}
+.overdue-container{
+    display:flex
+}
+table{
+    margin: 20px auto;
+}
+td{
+    padding: 5px 20px;
+}
+tr:nth-child(even) {
+    background: #DDCECD;
+}
+.magazine-row:nth-child(even) {
+    background: #cddcdd;
+}
+.button {
+   align-self: flex-end;
+    margin: 0 auto;
+    background-color: transparent;
+    width: 100px;
+    color: #1d4e89;
+    cursor: pointer;
+    border: none;
+    height: 30px;
+    border-radius: 20px;
+    border: 1.2px solid #1d4e89;
+
+    }
+
+.overdue-button{
+    width: 130px;
+    }
+
+.button:hover {
+    background-color: #1d4e89;
+    border: 1.2px solid #1d4e89;
+    color: #FDECEF;
+      }
