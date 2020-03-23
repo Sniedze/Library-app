@@ -61,15 +61,14 @@
                 <form action="{% url 'library_app:borrow_book' %}" method="POST">
                     {% csrf_token %}
 
-                    <tr>
+                    <tr class="book-row">
                         <td>{{ returned_book.book }}</td>
                         <td>{{ returned_book.book.author }}</td>
                         <td>{{ returned_book.borrowed_timestamp }}</td>
                         <td><input type="submit" class='button overdue-button' value="Borrow Again"></td>
                     </tr>
 
-                    <input type="hidden" name="fk" value="{{ overdue_book.book.pk }}">
-                    <input type="hidden" name="pk" value="{{ overdue_book.pk }}">
+                    <input type="hidden" name="pk" value="{{ returned_book.book.pk }}">
                 </form>
 
                 {% endfor %}
@@ -92,9 +91,7 @@
                         <td>{{ returned_magazine.borrowed_timestamp }}</td>
                         <td><input type="submit" class='button overdue-button' value="Borrow Again"></td>
                     </tr>
-
-                    <input type="hidden" name="fk" value="{{ overdue_magazine.magazine.pk }}">
-                    <input type="hidden" name="pk" value="{{ overdue_magazine.pk }}">
+                    <input type="hidden" name="pk" value="{{ returned_magazine.magazine.pk }}">
                 </form>
 
                 {% endfor %}

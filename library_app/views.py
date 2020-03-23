@@ -47,19 +47,31 @@ def index(request):
 @login_required()
 def catalog(request):
     books = Book.objects.order_by('title').filter(isAvailable=True)
+    unavailable_books = BorrowedBook.objects.order_by('-deadline').filter(isReturned=False)
     context = {
         'books': books,
+        'unavailable_books': unavailable_books
     }
-    return render(request, 'library_app/catalog.html', context)
+    user = request.user
+    if user.is_superuser:
+        return render(request, 'library_app/books.html', context)
+    else:
+        return render(request, 'library_app/catalog.html', context)
 
 
 @login_required()
 def magazine_catalog(request):
     magazines = Magazine.objects.order_by('title').filter(isAvailable=True)
+    unavailable_magazines = BorrowedMagazine.objects.order_by('-deadline').filter(isReturned=False)
     context = {
         'magazines': magazines,
+        'unavailable_magazines': unavailable_magazines,
     }
-    return render(request, 'library_app/magazines.html', context)
+    user = request.user
+    if user.is_superuser:
+        return render(request, 'library_app/press.html', context)
+    else:
+        return render(request, 'library_app/magazines.html', context)
 
 
 @login_required
@@ -130,3 +142,21 @@ def return_magazine(request):
     returned_magazine.isAvailable = True
     returned_magazine.save()
     return HttpResponseRedirect(reverse('library_app:index'))
+
+
+@login_required
+def edit_book(request):
+    pk = request.POST['pk']
+    del_book = get_object_or_404(Book, pk=pk)
+    del_book.delete()
+
+    return render(request, 'library_app/book.html')
+
+
+@login_required
+def edit_magazine(request):
+    pk = request.POST['pk']
+    del_magazine = get_object_or_404(Magazine, pk=pk)
+    del_magazine.delete()
+
+    return render(request, 'library_app/press.html')

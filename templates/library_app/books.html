@@ -1,0 +1,51 @@
+{% extends "base.html" %}
+
+{% block content %}
+
+<div class="returned-items-section">
+    <div>
+        <h1>Available Books</h1>
+        <div class="catalog">
+            {% for book in books %}
+            <form action="{% url 'library_app:edit_book' %}" method="POST">
+                {% csrf_token %}
+                <article class="article-container">
+                    <h3>{{ book.title }}</h3>
+                    <h3>{{ book.author }}</h3>
+                    <input type="hidden" name="pk" value="{{ book.pk }}">
+                    <input class='button' type="submit" value="Delete">
+
+                </article>
+            </form>
+
+            {% endfor %}
+        </div>
+    </div>
+
+    <div class="overdue-books">
+        <h1>Lent Books</h1>
+        <table>
+            <tr>
+                <th>Book</th>
+                <th>Author</th>
+                <th>User</th>
+                <th>Borrowed on</th>
+                <th>Borrowed by</th>
+
+            </tr>
+            {% for unavailable_book in unavailable_books %}
+            <tr>
+                <td class="book-cell">{{ unavailable_book.book.title }}</td>
+                <td class="book-cell">{{ unavailable_book.book.author}}</td>
+                <td class="book-cell">{{ unavailable_book.user }}</td>
+                <td class="book-cell">{{ unavailable_book.borrowed_timestamp }}</td>
+                <td class="book-cell">{{ unavailable_book.deadline }}</td>
+
+
+            </tr>
+
+            {% endfor %}
+        </table>
+    </div>
+
+</div>{% endblock %}

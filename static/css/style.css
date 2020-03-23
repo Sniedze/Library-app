@@ -60,7 +60,7 @@ nav{
 }
 .article-container{
     display:grid;
-    background-color: #DDCECD;
+    background-color: #ddcddc;
     height: 120px;
     box-shadow: 10px 10px 5px 0px rgba(0,0,0,0.26);
     border-radius: 20px;
@@ -85,10 +85,13 @@ td{
     padding: 5px 20px;
 }
 tr:nth-child(even) {
-    background: #DDCECD;
+    background: #ddcddc;
 }
 .magazine-row:nth-child(even) {
     background: #cddcdd;
+}
+td.book-cell{
+    padding: 5px 5px;
 }
 .button {
    align-self: flex-end;

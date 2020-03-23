@@ -1,0 +1,48 @@
+{% extends "base.html" %}
+
+{% block content %}
+
+<div class="returned-items-section">
+    <div>
+        <h1>Available Magazines</h1>
+        <div class="catalog">
+            {% for magazine in magazines %}
+            <form action="{% url 'library_app:edit_magazine' %}" method="POST">
+                {% csrf_token %}
+                <article class="article-container magazine-article">
+                    <h3>{{ magazine.title }}</h3>
+                    <input type="hidden" name="pk" value="{{ magazine.pk }}">
+                    <input class='button' type="submit" value="Delete">
+
+                </article>
+            </form>
+
+            {% endfor %}
+        </div>
+    </div>
+
+    <div class="overdue-magazines">
+        <h1>Lent Magazines</h1>
+        <table>
+            <tr>
+                <th>Magazine</th>
+                <th>User</th>
+                <th>Borrowed on</th>
+                <th>Borrowed by</th>
+
+            </tr>
+            {% for unavailable_magazine in unavailable_magazines %}
+            <tr class="magazine-row">
+                <td>{{ unavailable_magazine.magazine.title }}</td>
+                <td>{{ unavailable_magazine.user }}</td>
+                <td>{{ unavailable_magazine.borrowed_timestamp }}</td>
+                <td>{{ unavailable_magazine.deadline }}</td>
+
+
+            </tr>
+
+            {% endfor %}
+        </table>
+    </div>
+
+</div>{% endblock %}
