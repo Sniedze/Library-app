@@ -2,7 +2,7 @@ from csv import DictReader
 
 from django.core.management import BaseCommand
 
-from library_app.models import Book
+from library_app.models import Magazine
 
 ALREADY_LOADED_ERROR_MESSAGE = """
 If you need to reload the pet data from the CSV file,
@@ -14,15 +14,14 @@ database with tables"""
 class Command(BaseCommand):
 
     def handle(self, *args, **options):
-        if Book.objects.exists():
+        if Magazine.objects.exists():
             print('Book data already loaded...exiting.')
             print(ALREADY_LOADED_ERROR_MESSAGE)
             return
         print("Creating book data")
 
-        for row in DictReader(open('./books_new.csv')):
-            book = Book()
+        for row in DictReader(open('./magazines.csv')):
+            book = Magazine()
             book.title = row['Title']
-            book.author = row['Author']
 
             book.save()
