@@ -5,8 +5,9 @@ from datetime import datetime, timedelta
 
 class Book(models.Model):
     title = models.CharField(max_length=150)
-    author = models.CharField(max_length=150)
+    author = models.CharField(max_length=150, blank=True)
     isAvailable = models.BooleanField(default=True)
+    isReserved = models.BooleanField(default=False)
 
     def __str__(self):
         return f'{self.title}'
@@ -15,6 +16,7 @@ class Book(models.Model):
 class Magazine(models.Model):
     title = models.CharField(max_length=150)
     isAvailable = models.BooleanField(default=True)
+    isReserved = models.BooleanField(default=False)
 
     def __str__(self):
         return f'{self.title}'
@@ -29,7 +31,7 @@ class BorrowedBook(models.Model):
     book = models.ForeignKey(Book, on_delete=models.CASCADE)
     borrowed_timestamp = models.DateField(default=datetime.today)
     deadline = models.DateField(default=get_deadline)
-    isReturned = models.BooleanField(default=False)
+    status = models.CharField(default='', max_length=15)
 
     def __str__(self):
         return f'{self.user} - {self.book} - {self.borrowed_timestamp} - {self.deadline}'
@@ -44,7 +46,7 @@ class BorrowedMagazine(models.Model):
     magazine = models.ForeignKey(Magazine, on_delete=models.CASCADE)
     borrowed_timestamp = models.DateField(default=datetime.today)
     deadline = models.DateField(default=get_magazine_deadline)
-    isReturned = models.BooleanField(default=False)
+    status = models.CharField(default='', max_length=15)
 
     def __str__(self):
         return f'{self.user} - {self.magazine} - {self.borrowed_timestamp} - {self.deadline}'

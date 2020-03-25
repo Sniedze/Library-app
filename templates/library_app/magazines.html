@@ -1,10 +1,10 @@
 {% extends "base.html" %}
 
 {% block content %}
-
 <h1>Magazines</h1>
-<div class="catalog magazine-catalog">
+<div class="catalog">
     {% for magazine in magazines %}
+    {% if magazine.isAvailable == True %}
     <form action="{% url 'library_app:borrow_magazine' %}" method="POST">
         {% csrf_token %}
         <article class="article-container magazine-article">
@@ -14,6 +14,18 @@
 
         </article>
     </form>
+    {% else %}
+    <form action="{% url 'library_app:reserve_magazine' %}" method="POST">
+        {% csrf_token %}
+        <article class="article-container reserved-magazine-container magazine-article">
+            <h3>{{ magazine.title }}</h3>
+            <input type="hidden" name="pk" value="{{ magazine.pk }}">
+            <input class='button' type="submit" value="Reserve">
+
+        </article>
+    </form>
+    {% endif %}
+
 
     {% endfor %}
 </div>

@@ -5,6 +5,7 @@
 <h1>Books</h1>
 <div class="catalog">
     {% for book in books %}
+    {% if book.isAvailable %}
     <form action="{% url 'library_app:borrow_book' %}" method="POST">
         {% csrf_token %}
         <article class="article-container">
@@ -15,6 +16,19 @@
 
         </article>
     </form>
+    {% elif book.isAvailable == False %}
+    <form action="{% url 'library_app:reserve_book' %}" method="POST">
+        {% csrf_token %}
+        <article class="article-container reserved-article-container">
+            <h3>{{ book.title }}</h3>
+            <h3>{{ book.author }}</h3>
+            <input type="hidden" name="pk" value="{{ book.pk }}">
+            <input class='button' type="submit" value="Reserve">
+
+        </article>
+    </form>
+    {% endif %}
+
 
     {% endfor %}
 </div>
