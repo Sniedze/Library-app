@@ -6,8 +6,10 @@ app_name = 'library_app'
 urlpatterns = [
 
     path('', views.index, name='index'),
+    path('borrowed_magazines', views.borrowed_magazines, name='borrowed_magazines'),
+
     path('catalog', views.catalog, name='catalog'),
-    path('magazines', views.magazine_catalog, name='magazine'),
+    path('magazines', views.magazine_catalog, name='magazines'),
     path('borrow_magazine', views.borrow_magazine, name='borrow_magazine'),
     path('borrow_book', views.borrow_book, name='borrow_book'),
     path('return_book', views.return_book, name='return_book'),

@@ -4,6 +4,7 @@
 
 <h1>{{ text1 }}</h1>
 <h2>{{ text2 }}</h2>
-<a href="{% url 'library_app:index' %}"> Borrowed Items</a>
+<h2>{{ template }}</h2>
+<a href="{{ template }}"> Borrowed Items</a>
 
 {% endblock %}

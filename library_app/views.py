@@ -5,50 +5,50 @@ from django.db.models import Q
 from django.urls import reverse
 from datetime import datetime
 
-from .models import Book
-from .models import Magazine
-from .models import BorrowedBook
-from .models import BorrowedMagazine
+from .models import Book, Magazine, BorrowedBook, BorrowedMagazine
 
 
 @login_required
 def index(request):
     today = datetime.today()
     user = request.user
+    borrowed_books = BorrowedBook.objects.get_articles('borrowed', user)
+    overdue_books = BorrowedBook.objects.order_by('-deadline').filter(status='borrowed').filter(
+        Q(deadline__gt=today) | Q(deadline=None))
+    overdue_magazines = BorrowedMagazine.objects.order_by('-deadline').filter(status='borrowed').filter(
+        Q(deadline__gt=today) | Q(deadline=None))
+    returned_books = BorrowedBook.objects.get_articles('returned', user)
+    reserved_books = BorrowedBook.objects.get_articles('reserved', user)
+
+    context = {
+        'borrowed_books': borrowed_books,
+        'returned_books': returned_books,
+        'reserved_books': reserved_books,
+        'overdue_books': overdue_books,
+        'overdue_magazines': overdue_magazines,
+        'user': user,
+    }
     if user.is_superuser:
-        overdue_books = BorrowedBook.objects.order_by('-deadline').filter(status='borrowed').filter(
-            Q(deadline__gt=today) | Q(deadline=None))
-        overdue_magazines = BorrowedMagazine.objects.order_by('-deadline').filter(status='borrowed').filter(
-            Q(deadline__gt=today) | Q(deadline=None))
-        context = {
-            'overdue_books': overdue_books,
-            'overdue_magazines': overdue_magazines
-        }
         return render(request, 'library_app/overdue.html', context)
     else:
-        borrowed_books = BorrowedBook.objects.order_by('borrowed_timestamp').filter(user=request.user,
-                                                                                    status='borrowed')
-        borrowed_magazines = BorrowedMagazine.objects.order_by('borrowed_timestamp').filter(user=request.user,
-                                                                                            status='borrowed')
-        returned_books = BorrowedBook.objects.order_by('-borrowed_timestamp').filter(user=request.user,
-                                                                                     status='returned')
-        returned_magazines = BorrowedMagazine.objects.order_by('-borrowed_timestamp').filter(user=request.user,
-                                                                                             status='returned')
-        reserved_books = BorrowedBook.objects.filter(user=request.user,
-                                                     status='reserved')
-        reserved_magazines = BorrowedMagazine.objects.filter(user=request.user,
-                                                             status='reserved')
-
-        context = {
-            'borrowed_books': borrowed_books,
-            'returned_books': returned_books,
-            'reserved_books': reserved_books,
-            'borrowed_magazines': borrowed_magazines,
-            'returned_magazines': returned_magazines,
-            'reserved_magazines': reserved_magazines,
-            'user': request.user,
-        }
         return render(request, 'library_app/index.html', context)
+
+
+@login_required
+def borrowed_magazines(request):
+    user = request.user
+    users_magazines = BorrowedMagazine.objects.get_articles('borrowed', user)
+    returned_magazines = BorrowedMagazine.objects.get_articles('returned', user)
+    reserved_magazines = BorrowedMagazine.objects.get_articles('reserved', user)
+
+    context = {
+        'borrowed_magazines': users_magazines,
+        'returned_magazines': returned_magazines,
+        'reserved_magazines': reserved_magazines,
+        'user': user,
+    }
+
+    return render(request, 'library_app/borrowed_magazines.html', context)
 
 
 @login_required()
@@ -60,7 +60,7 @@ def catalog(request):
         pk = borrowed_book.book.pk
         id_list.append(pk)
     print(id_list)
-    books = Book.objects.order_by('title').filter(~Q(pk__in=id_list))
+    books = Book.objects.order_by('title').filter(~Q(pk__in=id_list)).filter(isActive=True)
     unavailable_books = BorrowedBook.objects.order_by('-deadline').filter(status='borrowed')
 
     context = {
@@ -76,14 +76,14 @@ def catalog(request):
 
 @login_required()
 def magazine_catalog(request):
-    borrowed_magazines = BorrowedMagazine.objects.order_by('borrowed_timestamp').filter(user=request.user).filter(
+    user_magazines = BorrowedMagazine.objects.order_by('borrowed_timestamp').filter(user=request.user).filter(
         Q(status='borrowed') | Q(status='reserved'))
     id_list = []
-    for borrowed_magazine in borrowed_magazines:
+    for borrowed_magazine in user_magazines:
         pk = borrowed_magazine.magazine.pk
         id_list.append(pk)
     print(id_list)
-    magazines = Magazine.objects.order_by('title').filter(~Q(pk__in=id_list))
+    magazines = Magazine.objects.order_by('title').filter(~Q(pk__in=id_list)).filter(isActive=True)
     unavailable_magazines = BorrowedMagazine.objects.order_by('-deadline').filter(status='borrowed')
     context = {
         'magazines': magazines,
@@ -98,8 +98,9 @@ def magazine_catalog(request):
 
 @login_required
 def borrow_book(request):
-    borrowed_books = BorrowedBook.objects.filter(user=request.user, status='borrowed')
-    if len(borrowed_books) < 10:
+    borrowed_books = BorrowedBook.objects.filter(user=request.user).filter(
+        Q(status='borrowed') | Q(status='reserved'))
+    if borrowed_books.count() < 10:
         pk = request.POST['pk']
         borrowed_book = get_object_or_404(Book, pk=pk)
         borrowed_book.isAvailable = False
@@ -114,7 +115,8 @@ def borrow_book(request):
     else:
         context = {
             'text1': 'You can not borrow more than 10 books.',
-            'text2': 'Please, go to your borrowed book list to return books before borrowing new ones.'
+            'text2': 'Please, go to your borrowed book list to return books before borrowing new ones.',
+            'template': "index",
 
         }
         return render(request, 'library_app/notification.html', context)
@@ -122,8 +124,9 @@ def borrow_book(request):
 
 @login_required
 def borrow_magazine(request):
-    borrowed_magazine = BorrowedMagazine.objects.filter(user=request.user, status='borrowed')
-    if len(borrowed_magazine) < 3:
+    borrowed_magazine = BorrowedMagazine.objects.filter(user=request.user).filter(
+        Q(status='borrowed') | Q(status='reserved'))
+    if borrowed_magazine.count() < 3:
         pk = request.POST['pk']
         borrowed_magazine = get_object_or_404(Magazine, pk=pk)
         borrowed_magazine.isAvailable = False
@@ -134,11 +137,12 @@ def borrow_magazine(request):
         borrow_instance.magazine = borrowed_magazine
         borrow_instance.status = 'borrowed'
         borrow_instance.save()
-        return HttpResponseRedirect(reverse('library_app:index'))
+        return HttpResponseRedirect(reverse('library_app:borrowed_magazines'))
     else:
         context = {
             'text1': 'You can not borrow more than 3 magazines.',
-            'text2': 'Please, go to your borrowed magazine list to return magazines before borrowing new ones.'
+            'text2': 'Please, go to your borrowed magazine list to return magazines before borrowing new ones.',
+            'template': "borrowed_magazines",
 
         }
         return render(request, 'library_app/notification.html', context)
@@ -162,7 +166,7 @@ def reserve_book(request):
     else:
         context = {
             'text1': 'You can not borrow more than 3 books.',
-            'text2': 'Please, go to your borrowed book list to return magazines before borrowing new ones.'
+            'text2': 'Please, go to your borrowed book list to return books before borrowing new ones.'
         }
         return render(request, 'library_app/notification.html', context)
 
@@ -182,7 +186,7 @@ def reserve_magazine(request):
         magazine_instance.magazine = reserved_magazine
         magazine_instance.status = 'reserved'
         magazine_instance.save()
-        return HttpResponseRedirect(reverse('library_app:index'))
+        return HttpResponseRedirect(reverse('library_app:borrowed_magazines'))
     else:
         context = {
             'text1': 'You can not borrow more than 3 magazines.',
@@ -216,25 +220,26 @@ def return_magazine(request):
     returned_magazine.isAvailable = True
     returned_magazine.isReserved = False
     returned_magazine.save()
-    return HttpResponseRedirect(reverse('library_app:index'))
+    return HttpResponseRedirect(reverse('library_app:borrowed_magazines'))
 
 
 @login_required
 def edit_book(request):
     pk = request.POST['pk']
     del_book = get_object_or_404(Book, pk=pk)
-    del_book.delete()
+    del_book.isActive = False
+    del_book.save()
 
-    return render(request, 'library_app/book.html')
+    return HttpResponseRedirect(reverse('library_app:catalog'))
 
 
 @login_required
 def edit_magazine(request):
     pk = request.POST['pk']
     del_magazine = get_object_or_404(Magazine, pk=pk)
-    del_magazine.delete()
-
-    return render(request, 'library_app/press.html')
+    del_magazine.isActive = False
+    del_magazine.save()
+    return HttpResponseRedirect(reverse('library_app:magazines'))
 
 
 @login_required
