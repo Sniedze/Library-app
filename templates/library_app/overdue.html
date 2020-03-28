@@ -20,12 +20,12 @@
                 <tr>
                     <td>{{ overdue_book.deadline }}</td>
                     <td>{{ overdue_book.user }}</td>
-                    <td>{{ overdue_book.book}}</td>
+                    <td>{{ overdue_book.article}}</td>
                     <td>{{ overdue_book.borrowed_timestamp }}</td>
                     <td><input type="submit" class='button overdue-button' value="Notify the User"></td>
                 </tr>
 
-                <input type="hidden" name="fk" value="{{ overdue_book.book.pk }}">
+                <input type="hidden" name="fk" value="{{ overdue_book.article.pk }}">
                 <input type="hidden" name="pk" value="{{ overdue_book.pk }}">
             </form>
 
@@ -50,12 +50,12 @@
                 <tr class="magazine-row">
                     <td>{{ overdue_magazine.deadline }}</td>
                     <td>{{ overdue_magazine.user }}</td>
-                    <td>{{ overdue_magazine.magazine}}</td>
+                    <td>{{ overdue_magazine.article}}</td>
                     <td>{{ overdue_magazine.borrowed_timestamp }}</td>
                     <td><input type="submit" class='button overdue-button' value="Notify the User"></td>
                 </tr>
 
-                <input type="hidden" name="fk" value="{{ overdue_magazine.magazine.pk }}">
+                <input type="hidden" name="fk" value="{{ overdue_magazine.article.pk }}">
                 <input type="hidden" name="pk" value="{{ overdue_magazine.pk }}">
             </form>
 

@@ -35,8 +35,8 @@
             </tr>
             {% for unavailable_book in unavailable_books %}
             <tr>
-                <td class="book-cell">{{ unavailable_book.book.title }}</td>
-                <td class="book-cell">{{ unavailable_book.book.author}}</td>
+                <td class="book-cell">{{ unavailable_book.article.title }}</td>
+                <td class="book-cell">{{ unavailable_book.article.author}}</td>
                 <td class="book-cell">{{ unavailable_book.user }}</td>
                 <td class="book-cell">{{ unavailable_book.borrowed_timestamp }}</td>
                 <td class="book-cell">{{ unavailable_book.deadline }}</td>

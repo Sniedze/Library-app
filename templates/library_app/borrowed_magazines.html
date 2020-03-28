@@ -12,11 +12,11 @@
             <form action="{% url 'library_app:return_magazine' %}" method="POST">
                 {% csrf_token %}
                 <article class="article-container magazine-article borrowed-magazine-container">
-                    <h2>{{ borrowed_magazine.magazine}}</h2>
+                    <h2>{{ borrowed_magazine.article.title }}</h2>
                     <h3>Borrowed on: {{ borrowed_magazine.borrowed_timestamp }}</h3>
                     <h3 class="return-date">Return Date: {{ borrowed_magazine.deadline }}</h3>
 
-                    <input type="hidden" name="fk" value="{{ borrowed_magazine.magazine.pk }}">
+                    <input type="hidden" name="fk" value="{{ borrowed_magazine.article.pk }}">
                     <input type="hidden" name="pk" value="{{ borrowed_magazine.pk }}">
                     <input class='button' type="submit" value="Return">
 
@@ -26,7 +26,7 @@
             {% endfor %}
             {% else %}
             <h2>You have no borrowed magazines. Please, go to <a
-                    href="{% url 'library_app:magazine' %}">Magazines</a> to
+                    href="{% url 'library_app:magazines' %}">Magazines</a> to
                 borrow or reserve.</h2>
             {% endif %}
         </div>
@@ -42,12 +42,12 @@
                 {% csrf_token %}
                 <article
                         class="article-container reserved-magazine-container borrowed-magazine-container reserved-article-container">
-                    <h2>{{ reserved_magazine.magazine}}</h2>
-                    <h2>{{ reserved_magazine.magazine.pk}}</h2>
-                    <h2>{{ reserved_magazine.pk}}</h2>
+                    <h2>{{ reserved_magazine.article.title }}</h2>
+                    <h4>Available by: {{ reserved_magazine.deadline }}</h4>
+
 
                     <input type="hidden" name="pk" value="{{ reserved_magazine.pk }}">
-                    <input type="hidden" name="fk" value="{{ reserved_magazine.magazine.pk }}">
+                    <input type="hidden" name="fk" value="{{ reserved_magazine.article.pk }}">
                     <input class='button' type="submit" value="Cancel">
                 </article>
             </form>
@@ -71,11 +71,11 @@
                 {% csrf_token %}
 
                 <tr class="magazine-row">
-                    <td>{{ returned_magazine.magazine }}</td>
+                    <td>{{ returned_magazine.article.title }}</td>
                     <td>{{ returned_magazine.borrowed_timestamp }}</td>
                     <td><input type="submit" class='button overdue-button' value="Borrow Again"></td>
                 </tr>
-                <input type="hidden" name="pk" value="{{ returned_magazine.magazine.pk }}">
+                <input type="hidden" name="pk" value="{{ returned_magazine.article.pk }}">
             </form>
 
             {% endfor %}

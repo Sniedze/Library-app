@@ -11,14 +11,9 @@
 <body>
 <nav class="navbar">
     <ul>
-        <a href="{% url 'library_app:index' %}" class="navlink">BORROWED BOOKS</a>
-        <a href="{% url 'library_app:borrowed_magazines' %}" class="navlink">BORROWED MAGAZINES</a>
-        <a href="{% url 'library_app:catalog' %}" class="navlink">BOOKS</a>
-        <a href="{% url 'library_app:magazines' %}" class="navlink">MAGAZINES</a>
+
         <a href="{% url 'login_app:sign_up' %}" class="navlink">SIGN UP</a>
         <a href="{% url 'login_app:login' %}" class="navlink">LOGIN</a>
-        <a href="{% url 'login_app:logout' %}" class="navlink">LOG OUT</a>
-        <a href="{% url 'login_app:logout' %}" class="navlink">DELETE ACCOUNT</a>
 
     </ul>
 </nav>

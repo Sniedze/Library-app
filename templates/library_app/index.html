@@ -12,11 +12,12 @@
             <form action="{% url 'library_app:return_book' %}" method="POST">
                 {% csrf_token %}
                 <article class="article-container borrowed-book-container">
-                    <h2>{{ borrowed_book.book}}</h2>
+                    <h2>{{ borrowed_book.article.title}}</h2>
+                    <h3>{{ borrowed_book.article.author }}</h3>
                     <h3>Borrowed on: {{ borrowed_book.borrowed_timestamp }}</h3>
                     <h3 class="return-date">Return Date: {{ borrowed_book.deadline }}</h3>
 
-                    <input type="hidden" name="fk" value="{{ borrowed_book.book.pk }}">
+                    <input type="hidden" name="fk" value="{{ borrowed_book.article.pk }}">
                     <input type="hidden" name="pk" value="{{ borrowed_book.pk }}">
                     <input class='button' type="submit" value="Return">
 
@@ -40,12 +41,12 @@
             <form action="{% url 'library_app:cancel_book_reservation' %}" method="POST">
                 {% csrf_token %}
                 <article class="article-container borrowed-book-container reserved-article-container">
-                    <h2>{{ reserved_book.book}}</h2>
-                    <h3>{{ reserved_book.book.author }}</h3>
-                    <h3>{{ reserved_book.book.pk }}</h3>
-                    <h3>{{ reserved_book.pk }}</h3>
+                    <h2>{{ reserved_book.article.title}}</h2>
+                    <h3>{{ reserved_book.article.author }}</h3>
+                    <h4>Available by: {{ reserved_book.deadline }}</h4>
+
                     <input type="hidden" name="pk" value="{{ reserved_book.pk }}">
-                    <input type="hidden" name="fk" value="{{ reserved_book.book.pk }}">
+                    <input type="hidden" name="fk" value="{{ reserved_book.article.pk }}">
                     <input class='button' type="submit" value="Cancel">
                 </article>
             </form>
@@ -71,13 +72,13 @@
                 {% csrf_token %}
 
                 <tr class="book-row">
-                    <td>{{ returned_book.book }}</td>
-                    <td>{{ returned_book.book.author }}</td>
+                    <td>{{ returned_book.article.title }}</td>
+                    <td>{{ returned_book.article.author }}</td>
                     <td>{{ returned_book.borrowed_timestamp }}</td>
                     <td><input type="submit" class='button overdue-button' value="Borrow Again"></td>
                 </tr>
 
-                <input type="hidden" name="pk" value="{{ returned_book.book.pk }}">
+                <input type="hidden" name="pk" value="{{ returned_book.article.pk }}">
             </form>
 
             {% endfor %}
