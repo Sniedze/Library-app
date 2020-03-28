@@ -8,3 +8,5 @@ db.sqlite3-journal
 /media
 python-environment
 /static
+books_new.csv
+magazines.csv
