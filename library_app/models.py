@@ -6,6 +6,7 @@ from django.contrib.auth.models import User
 from datetime import datetime, timedelta
 
 
+# #### Abstract model that creates fields in Books and Magazines models #######
 class CatalogCreationModel(models.Model):
     title = models.CharField(max_length=150)
     author = models.CharField(max_length=150, blank=True)
@@ -30,10 +31,12 @@ class Book(CatalogCreationModel):
 
 
 class GetUserArticles(models.Manager):
+    # #### Manager method, that gets all user`s borrowed, reserved and returned articles #######
     def get_user_articles(self, status, user):
         articles = self.order_by('borrowed_timestamp').filter(user=user, status=status)
         return articles
 
+    # #### Manager method, that gets catalogs, excluding user`s borrowed and reserved articles #######
     def get_articles(self, user, article_model):
         borrowed_articles = self.order_by('borrowed_timestamp').filter(user=user).filter(
             Q(status='borrowed') | Q(status='reserved'))
@@ -47,6 +50,7 @@ class GetUserArticles(models.Manager):
         return articles
 
 
+# #### Manager, that includes borrow article method #######
 class BorrowArticle(models.Manager):
     def users_articles(self, user):
         borrowed_articles = self.filter(user=user).filter(
@@ -100,6 +104,7 @@ def get_deadline():
     return datetime.today() + timedelta(days=30)
 
 
+# #### Model which contains all borrowed books #######
 class BorrowedBook(models.Model):
     user = models.ForeignKey(User, on_delete=models.CASCADE)
     borrowed_timestamp = models.DateField(default=datetime.today)
@@ -120,6 +125,7 @@ def get_magazine_deadline():
     return datetime.today() + timedelta(days=7)
 
 
+# #### Model which contains all borrowed magazines #######
 class BorrowedMagazine(models.Model):
     user = models.ForeignKey(User, on_delete=models.CASCADE)
     article = models.ForeignKey(Magazine, on_delete=models.CASCADE)
